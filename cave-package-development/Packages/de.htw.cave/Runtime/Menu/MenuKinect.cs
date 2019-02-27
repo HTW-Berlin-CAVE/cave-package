@@ -12,6 +12,22 @@ namespace Htw.Cave.Menu
     public sealed class MenuKinect : MonoBehaviour
     {
 		[SerializeField]
+		private Text inTrackingAreaText;
+		public Text InTrackingAreaText
+		{
+			get { return this.inTrackingAreaText; }
+			set { this.inTrackingAreaText = value; }
+		}
+
+		[SerializeField]
+		private Text visibilityText;
+		public Text VisibilityText
+		{
+			get { return this.visibilityText; }
+			set { this.visibilityText = value; }
+		}
+
+		[SerializeField]
 		private Shader sphereShader;
 		public Shader SphereShader
 		{
@@ -23,6 +39,7 @@ namespace Htw.Cave.Menu
 		private KinectActor actor;
 		private List<GameObject> spheres;
 		private JointType[] types;
+		private Rect area;
 
 		public void Awake()
 		{
@@ -46,6 +63,7 @@ namespace Htw.Cave.Menu
 				JointType.FootLeft,
 				JointType.FootRight
 			};
+			this.area = this.manager.KinectBrain.Settings.TrackingAreaCentered();
 		}
 
 		public void OnEnable()
@@ -60,8 +78,33 @@ namespace Htw.Cave.Menu
 
 		public void Update()
 		{
+			if(this.actor.InArea(this.area))
+			{
+				this.inTrackingAreaText.text = "Yes";
+
+				if(this.actor.FullyVisible())
+					this.visibilityText.text = "Full";
+				else if(this.actor.HeadVisible())
+					this.visibilityText.text = "Head";
+				else if(this.actor.FeetVisible())
+					this.visibilityText.text = "Feet";
+				else
+					this.visibilityText.text = "Bad";
+			} else {
+				this.inTrackingAreaText.text = "No";
+				this.visibilityText.text = "Missing";
+			}
+
+
 			Mirror();
 		}
+
+#if UNITY_EDITOR
+		public void Reset()
+		{
+			this.sphereShader = Shader.Find("Standard");
+		}
+#endif
 
 		private void InstantiateJointSpheres()
 		{
@@ -69,6 +112,7 @@ namespace Htw.Cave.Menu
 			{
 				GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				sphere.name = "Kinect Joint " + this.types[i].ToString();
+				sphere.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
 				Destroy(sphere.GetComponent<SphereCollider>());
 
 				Renderer rend = sphere.GetComponent<Renderer>();
@@ -93,10 +137,13 @@ namespace Htw.Cave.Menu
 		{
 			int jointIndex = 0;
 
+			Vector3 direction = this.manager.transform.position - this.actor.transform.position;
+			direction.y = 0f;
+
 			foreach(GameObject sphere in this.spheres)
 			{
-				sphere.transform.position = manager.transform.TransformPoint(this.actor.GetJointPosition(this.types[jointIndex++]));
-				sphere.transform.position = sphere.transform.position * 0.5f - transform.forward * 0.5f;
+				Vector3 worldPosition = this.manager.KinectBrain.transform.TransformPoint(this.actor.GetJointPosition(this.types[jointIndex++]));
+				sphere.transform.position = worldPosition + direction;
 			}
 		}
     }

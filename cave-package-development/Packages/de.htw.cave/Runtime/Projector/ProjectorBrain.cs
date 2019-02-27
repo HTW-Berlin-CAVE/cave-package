@@ -43,9 +43,7 @@ namespace Htw.Cave.Projector
 		private void LateInitialize()
 		{
 			this.eyes.SetEyeSeparation(this.settings.StereoSeparation);
-
-			ProjectorUtils.AlignViewports(this.emitters, this.settings.ViewportAxis);
-			ProjectorUtils.AttachRenderer(this, this.settings.DeviceOutput);
+			this.mount.AlignViewports(this.settings.ViewportAxis);
 
 			for(int i = this.emitters.Length - 1; i >= 0; --i)
 			{
@@ -58,7 +56,7 @@ namespace Htw.Cave.Projector
 					this.emitters[i].DisableMask();
 			}
 
-			this.renderer = base.GetComponent<ProjectorRenderer>();
+			this.renderer = ProjectorRenderer.Attach(this, this.settings.DeviceOutput);
 			this.renderer.SetRenderTargets(this.eyes, this.emitters);
 		}
     }

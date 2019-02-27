@@ -43,7 +43,7 @@ namespace Htw.Cave.Projector
 
 		public void Awake()
 		{
-			this.emitters = base.GetComponentsInChildren<ProjectorEmitter>(false);
+			this.emitters = Get();
 		}
 
 		public void LateUpdate()
@@ -53,7 +53,7 @@ namespace Htw.Cave.Projector
 
 		public ProjectorEmitter[] Get()
 		{
-			if(transform.hasChanged)
+			if(this.emitters == null || transform.hasChanged)
 				this.emitters = base.GetComponentsInChildren<ProjectorEmitter>(false);
 
 			return this.emitters;
@@ -62,6 +62,24 @@ namespace Htw.Cave.Projector
 		public ProjectorEmitter[] GetOrdered()
 		{
 			return Get().OrderBy(emitter => emitter.Configuration.Order).ToArray();
+		}
+
+		public void AlignViewports(ViewportAxis axis)
+		{
+			ProjectorEmitter[] ordered = GetOrdered();
+			float steps = 1f / ordered.Length;
+
+			switch(axis)
+			{
+				case ViewportAxis.X:
+					for(int i = 0; i < ordered.Length; ++i)
+						ordered[i].GetComponent<Camera>().rect = new Rect(steps * i, 0f, steps, 1f);
+					break;
+				case ViewportAxis.Y:
+					for(int i = 0; i < ordered.Length; ++i)
+						ordered[i].GetComponent<Camera>().rect = new Rect(0f, steps * i, 1f, steps);
+					break;
+			}
 		}
     }
 }

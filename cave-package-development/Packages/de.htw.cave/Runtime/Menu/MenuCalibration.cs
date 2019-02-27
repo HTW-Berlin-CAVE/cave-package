@@ -159,7 +159,7 @@ namespace Htw.Cave.Menu
 				if(stickRight[1] > 0f)
 					Calibrate(new Vector2(0f, 1f));
 
-				this.joyconDelay = Time.time + 1f;
+				this.joyconDelay = Time.time + 0.5f;
 			}
 		}
 
@@ -169,6 +169,11 @@ namespace Htw.Cave.Menu
 		}
 
 #if UNITY_EDITOR
+		public void Reset()
+		{
+			this.sphereShader = Shader.Find("Standard");
+		}
+
 		public void OnApplicationQuit()
 		{
 			ResetCalibration();
@@ -271,6 +276,7 @@ namespace Htw.Cave.Menu
 				GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 				sphere.transform.position = vector;
 				sphere.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
+				Destroy(sphere.GetComponent<SphereCollider>());
 
 				Renderer rend = sphere.GetComponent<Renderer>();
 				rend.material.shader = this.sphereShader;

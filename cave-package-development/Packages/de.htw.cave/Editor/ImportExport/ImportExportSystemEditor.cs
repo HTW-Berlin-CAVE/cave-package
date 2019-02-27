@@ -115,7 +115,7 @@ namespace Htw.Cave.ImportExport
 			if(this.enableInEditorProperty.boolValue)
 				EditorGUILayout.HelpBox("Its recommended to disable this component in the editor to reduce loading time.", MessageType.Warning);
 
-			EditorGUILayout.LabelField("Select the GameObject that holds a reference to the ScriptableObject you want to import and export. Awake will be called on all components after the import was successful.", EditorStyles.wordWrappedMiniLabel);
+			EditorGUILayout.LabelField("Add ScriptableObject you want to import and export and the GameObject that holds a reference to it. Awake will be called on all GameObjects after a successful import.", EditorStyles.wordWrappedMiniLabel);
 
 			this.entriesList.DoLayoutList();
 

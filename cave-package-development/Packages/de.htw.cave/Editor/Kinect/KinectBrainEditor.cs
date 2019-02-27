@@ -10,6 +10,9 @@ namespace Htw.Cave.Kinect
 	[CustomEditor(typeof(KinectBrain))]
     public class KinectBrainEditor : Editor
     {
+		private static bool searchedInstallation;
+		private static KinectInstall kinectInstall;
+
 		private KinectBrain me;
 		private Editor editor;
 		private SerializedProperty settingsProperty;
@@ -48,6 +51,17 @@ namespace Htw.Cave.Kinect
 			}
 
 			EditorGUI.indentLevel--;
+
+			if(!searchedInstallation)
+			{
+				kinectInstall = KinectEditorUtils.FindInstallation();
+				searchedInstallation = true;
+			}
+
+			if(kinectInstall == KinectInstall.Ignore)
+				EditorGUILayout.HelpBox("Unable to find Kinect 2.0 SDK installation.", MessageType.Warning);
+			else if(kinectInstall == KinectInstall.Missing)
+				EditorGUILayout.HelpBox("Kinect 2.0 SDK is not installed. Components that require the SDK can throw errors.", MessageType.Error);
 
 			serializedObject.ApplyModifiedProperties();
 			EditorGUI.EndChangeCheck();

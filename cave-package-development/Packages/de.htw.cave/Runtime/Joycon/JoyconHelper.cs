@@ -16,7 +16,7 @@ namespace Htw.Cave.Joycon
 
 		public static List<JoyconLib.Joycon> GetJoycons()
 		{
-			return JoyconManager.Instance.j;
+			return JoyconManager.Instance.joycons;
 		}
 
 		public static JoyconLib.Joycon GetLeftJoycon()

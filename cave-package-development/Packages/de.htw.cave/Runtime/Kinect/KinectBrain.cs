@@ -49,8 +49,7 @@ namespace Htw.Cave.Kinect
 			if(this.manager == null)
 				this.manager = base.gameObject.AddComponent<KinectManager>();
 
-			this.area = this.settings.TrackingArea;
-			this.area.center -= this.area.max * 0.5f;
+			this.area = this.settings.TrackingAreaCentered();
 		}
 
 		private void SearchActor(Body[] bodies)

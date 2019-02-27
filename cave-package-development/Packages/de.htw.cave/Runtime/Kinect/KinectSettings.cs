@@ -40,5 +40,12 @@ namespace Htw.Cave.Kinect
 			get { return hdFace; }
 			set { this.hdFace = value; }
 		}
+
+		public Rect TrackingAreaCentered()
+		{
+			Rect centered = this.trackingArea;
+			centered.center -= centered.size * 0.5f;
+			return centered;
+		}
     }
 }

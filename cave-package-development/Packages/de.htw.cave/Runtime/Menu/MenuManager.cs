@@ -66,7 +66,7 @@ namespace Htw.Cave.Menu
 
 		public void Awake()
 		{
-			this.eventSystem = FindObjectOfType<EventSystem>();
+			this.eventSystem = EventSystem.current;
 			this.menu = MenuType.Calibration;
 			this.focus = 0;
 			this.joyconDelay = 0f;
@@ -100,15 +100,6 @@ namespace Htw.Cave.Menu
 
 		public void Update()
 		{
-			if(Input.GetKeyUp(KeyCode.LeftArrow))
-				FocusPrevious();
-
-			if(Input.GetKeyUp(KeyCode.RightArrow))
-				FocusNext();
-
-			//(Input.GetKeyUp(KeyCode.Return))
-				//ExecuteFocus();
-
 			if(this.leftJoycon != null)
 			{
 				if(Time.time > this.joyconDelay)
@@ -121,7 +112,7 @@ namespace Htw.Cave.Menu
 					if(stickLeft[0] > 0f)
 						FocusNext();
 
-					this.joyconDelay = Time.time + 1f;
+					this.joyconDelay = Time.time + 0.5f;
 				}
 
 				if(this.leftJoycon.GetButtonUp(JoyconLib.Joycon.Button.SHOULDER_1))
@@ -185,16 +176,19 @@ namespace Htw.Cave.Menu
 
 		private void FocusPrevious()
 		{
+			this.eventSystem.sendNavigationEvents = false;
 			--this.focus;
 
 			if(this.focus < 0)
 				this.focus = this.focusables.Length - 1;
 
 			SetFocus();
+			this.eventSystem.sendNavigationEvents = true;
 		}
 
 		private void FocusNext()
 		{
+			this.eventSystem.sendNavigationEvents = false;
 			++this.focus;
 
 			if(this.focus > this.focusables.Length - 1)
