@@ -9,6 +9,6 @@
 * **Development**
 	* [Manuals](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/List.md)
 	* [Code Documentation](cave-package-development/Packages/de.htw.cave/Documentation~/Code/Namespaces.md)
-	* [Algorithms](cave-package-development/Packages/de.htw.cave/Documentation~/Algorithms.md)
+	* [Algorithms](cave-package-development/Packages/de.htw.cave/Documentation~/algorithms.md)
 	* [Third Party](cave-package-development/Packages/de.htw.cave/Documentation~/ThirdParty.md)
 	* [Future](cave-package-development/Packages/de.htw.cave/Documentation~/Future.md)
