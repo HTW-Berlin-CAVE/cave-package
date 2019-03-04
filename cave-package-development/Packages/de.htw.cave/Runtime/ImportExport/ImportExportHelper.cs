@@ -19,6 +19,17 @@ namespace Htw.Cave.ImportExport
 			return Path.Combine(absolute, path);
 		}
 
+		public static string ExistingPersistentPath(string path)
+		{
+			string persistent = PersistentPath(path);
+			FileInfo file = new FileInfo(persistent);
+
+			if(file.Exists)
+				return persistent;
+			else
+				return Application.persistentDataPath;
+		}
+
 		public static void RenameFile(FileInfo file, string name)
 		{
 			File.Move(file.FullName, Path.Combine(file.DirectoryName, name));

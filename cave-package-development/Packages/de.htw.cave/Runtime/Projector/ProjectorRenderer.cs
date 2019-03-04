@@ -15,7 +15,10 @@ namespace Htw.Cave.Projector
 
 		public static ProjectorRenderer Attach(ProjectorBrain brain, DeviceOutput output)
 		{
-			ProjectorRenderer renderer = null;
+			ProjectorRenderer renderer = brain.GetComponent<ProjectorRenderer>();
+
+			if(renderer != null)
+				GameObject.Destroy(renderer);
 
 			switch(output)
 			{

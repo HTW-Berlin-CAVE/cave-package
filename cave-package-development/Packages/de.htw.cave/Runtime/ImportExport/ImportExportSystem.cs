@@ -140,6 +140,14 @@ namespace Htw.Cave.ImportExport
 			LogNow(ImportExportLogType.Export, scriptableObject);
 		}
 
+		public void ImportManually(ScriptableObject scriptableObject, string file)
+		{
+			string json = ImportExportHelper.ImportFile(file);
+			JsonUtility.FromJsonOverwrite(json, scriptableObject);
+			LogNow(ImportExportLogType.ImportManually, scriptableObject);
+			WriteLogAndClear();
+		}
+
 		public List<ImportExportLog> GetLogs()
 		{
 			return this.logs;
@@ -203,6 +211,9 @@ namespace Htw.Cave.ImportExport
 
 		private void LogNow(ImportExportLogType logType, ScriptableObject scriptableObject)
 		{
+			if(this.logs == null)
+				this.logs = new List<ImportExportLog>();
+
 			this.logs.Add(new ImportExportLog(logType, DateTime.Now, scriptableObject));
 		}
 
@@ -223,18 +234,7 @@ namespace Htw.Cave.ImportExport
 			List<string> lines = new List<string>();
 
 			foreach(ImportExportLog log in this.logs)
-			{
-				string line = log.dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-
-				if(log.logType == ImportExportLogType.Import)
-					line = line + " - Import";
-				else if(log.logType == ImportExportLogType.Export)
-					line = line + " - Export";
-
-				line = line + " - " + log.scriptableObject.name;
-
-				lines.Add(line);
-			}
+				lines.Add(log.ToLog());
 
 			ImportExportHelper.LogLines(ImportExportHelper.PersistentPath(logFile), lines);
 		}

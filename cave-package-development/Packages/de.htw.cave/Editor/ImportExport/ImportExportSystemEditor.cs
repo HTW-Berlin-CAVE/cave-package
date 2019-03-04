@@ -19,25 +19,29 @@ namespace Htw.Cave.ImportExport
 		private SerializedProperty overwriteLocalFilesProperty;
 		private SerializedProperty enableInEditorProperty;
 		private ReorderableList entriesList;
+		private TextAsset importAsset;
 
 		static ImportExportSystemEditor()
 		{
 			EditorApplication.playModeStateChanged += ApplyAssetChange;
 		}
 
+		public static void ReserializeEntries(ImportExportSystem system)
+		{
+			string[] assetPaths = new string[system.Entries.Count];
+
+			int index = 0;
+			foreach(ImportExportEntry entry in system.Entries)
+				assetPaths[index++] = AssetDatabase.GetAssetPath(entry.scriptableObject);
+
+			assetPaths = assetPaths.Distinct().ToArray();
+			AssetDatabase.ForceReserializeAssets(assetPaths);
+		}
+
 		private static void ApplyAssetChange(PlayModeStateChange state)
 		{
 			if(state == PlayModeStateChange.EnteredEditMode)
-			{
-				string[] assetPaths = new string[ImportExportSystem.Instance.Entries.Count];
-
-				int index = 0;
-				foreach(ImportExportEntry entry in ImportExportSystem.Instance.Entries)
-					assetPaths[index++] = AssetDatabase.GetAssetPath(entry.scriptableObject);
-
-				assetPaths = assetPaths.Distinct().ToArray();
-				AssetDatabase.ForceReserializeAssets(assetPaths);
-			}
+				ReserializeEntries(ImportExportSystem.Instance);
 		}
 
 		public void Awake()
@@ -79,6 +83,7 @@ namespace Htw.Cave.ImportExport
 				EditorGUI.PropertyField(left, gameObject, new GUIContent());
 				EditorGUI.PropertyField(right, scriptableObject, new GUIContent());
 			};
+			this.importAsset = null;
 		}
 
 		public override void OnInspectorGUI()
@@ -119,6 +124,29 @@ namespace Htw.Cave.ImportExport
 
 			this.entriesList.DoLayoutList();
 
+			if(this.entriesList.index != -1)
+			{
+				SerializedProperty element = this.entriesList.serializedProperty.GetArrayElementAtIndex(this.entriesList.index);
+				ScriptableObject scriptableObject = (ScriptableObject)element.FindPropertyRelative("scriptableObject").objectReferenceValue;
+
+				EditorGUILayout.BeginHorizontal();
+
+				GUILayout.FlexibleSpace();
+
+				this.importAsset = (TextAsset)EditorGUILayout.ObjectField(this.importAsset, typeof(TextAsset), false);
+
+				if(GUILayout.Button("Import"))
+				{
+					this.me.ImportManually(scriptableObject, Application.dataPath + "/" + AssetDatabase.GetAssetPath(this.importAsset));
+					ReserializeEntries(this.me);
+				}
+
+				if(GUILayout.Button("Open"))
+					EditorUtility.RevealInFinder(ImportExportHelper.ExistingPersistentPath(scriptableObject.name + ".json"));
+
+				EditorGUILayout.EndHorizontal();
+			}
+
 			string tail = this.me.ReadLogTail(3);
 
 			if(tail != null)
@@ -130,9 +158,8 @@ namespace Htw.Cave.ImportExport
 				GUILayout.FlexibleSpace();
 
 				if(GUILayout.Button("Clear Log"))
-				{
 					this.me.ClearLogFile();
-				}
+
 				EditorGUILayout.EndHorizontal();
 			}
 

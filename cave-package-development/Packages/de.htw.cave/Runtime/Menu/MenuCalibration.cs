@@ -28,6 +28,8 @@ namespace Htw.Cave.Menu
     {
 		private const float minSensitivity = 0.001f;
 		private const float maxSensitivity = 0.1f;
+		private const int minRange = 1;
+		private const int maxRange = 10;
 
 		[SerializeField]
 		private Text displayLabelText;
@@ -78,19 +80,19 @@ namespace Htw.Cave.Menu
 		}
 
 		[SerializeField]
-		private Text enableSpheresText;
-		public Text EnableSpheresText
+		private Text enableGuidesText;
+		public Text EnableGuidesText
 		{
-			get { return this.enableSpheresText; }
-			set { this.enableSpheresText = value; }
+			get { return this.enableGuidesText; }
+			set { this.enableGuidesText = value; }
 		}
 
 		[SerializeField]
-		private Shader sphereShader;
-		public Shader SphereShader
+		private GameObject visualGuidePrefab;
+		public GameObject VisualGuidePrefab
 		{
-			get { return this.sphereShader; }
-			set { this.sphereShader = value; }
+			get { return this.visualGuidePrefab; }
+			set { this.visualGuidePrefab = value; }
 		}
 
 		private MenuManager manager;
@@ -101,7 +103,7 @@ namespace Htw.Cave.Menu
 		private int anchor;
 		private float joyconDelay;
 		private JoyconLib.Joycon rightJoycon;
-		private List<GameObject> spheres;
+		private List<GameObject> guides;
 
 		public void Awake()
 		{
@@ -109,7 +111,6 @@ namespace Htw.Cave.Menu
 			this.emitters = this.manager.ProjectorBrain.GetComponentInChildren<ProjectorMount>().Get();
 			this.backups = new CalibrationBackup[this.emitters.Length];
 			this.joyconDelay = 0f;
-			this.spheres = new List<GameObject>();
 		}
 
 		public void OnEnable()
@@ -165,15 +166,10 @@ namespace Htw.Cave.Menu
 
 		public void OnDisable()
 		{
-			DisableCalibrationSpheres();
+			DisableCalibrationGuides();
 		}
 
 #if UNITY_EDITOR
-		public void Reset()
-		{
-			this.sphereShader = Shader.Find("Standard");
-		}
-
 		public void OnApplicationQuit()
 		{
 			ResetCalibration();
@@ -182,8 +178,7 @@ namespace Htw.Cave.Menu
 
 		public void Calibrate(Vector2 direction)
 		{
-			float absoluteSensitivity = 1f / ((float)this.sensitivity + 0.000001f);
-			float smoothSensitivity = Mathf.Lerp(minSensitivity, maxSensitivity, absoluteSensitivity / 10f);
+			float smoothSensitivity = Mathf.Lerp(minSensitivity, maxSensitivity, (float)this.sensitivity / 10f);
 			direction = direction * smoothSensitivity;
 
 			this.emitters[this.display].Configuration.EqualizationAnchors[this.anchor] += direction;
@@ -224,17 +219,22 @@ namespace Htw.Cave.Menu
 			ShowDisplay();
 		}
 
-		private void ShowDisplay()
+		public void InvertDisplay()
 		{
-			this.displayLabelText.text = this.emitters[this.display].Configuration.DisplayName;
+			if(this.emitters[this.display].Configuration.InvertStereo)
+				this.emitters[this.display].Configuration.InvertStereo = false;
+			else
+				this.emitters[this.display].Configuration.InvertStereo = true;
+
+			this.emitters[this.display].SetStereoEffect(this.manager.ProjectorBrain.Settings.StereoConvergence, this.manager.ProjectorBrain.Settings.StereoSeparation);
 		}
 
 		public void LessSensitivity()
 		{
 			--this.sensitivity;
 
-			if(this.sensitivity < 1)
-				this.sensitivity = 1;
+			if(this.sensitivity < minRange)
+				this.sensitivity = minRange;
 
 			ShowSensitivity();
 		}
@@ -243,64 +243,18 @@ namespace Htw.Cave.Menu
 		{
 			++this.sensitivity;
 
-			if(this.sensitivity > 10)
-				this.sensitivity = 10;
+			if(this.sensitivity > maxRange)
+				this.sensitivity = maxRange;
 
 			ShowSensitivity();
 		}
 
-		public void ToggleCalibrationSpheres()
+		public void ToggleCalibrationGuide()
 		{
-			if(this.spheres.Count > 0)
-				DisableCalibrationSpheres();
+			if(this.guides == null)
+				EnableCalibrationGuides();
 			else
-				EnableCalibrationSpheres();
-		}
-
-		private void EnableCalibrationSpheres()
-		{
-			this.enableSpheresText.text = "Disable Spheres";
-
-			List<Vector3> list = new List<Vector3>();
-
-			for(int i = this.emitters.Length - 1; i >= 0; --i)
-			{
-				Vector3[] plane = this.emitters[i].TransformPlane();
-
-				for(int k = plane.Length - 1; k >= 0; --k)
-					list.Add(plane[k]);
-			}
-
-			foreach(Vector3 vector in list)
-			{
-				GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				sphere.transform.position = vector;
-				sphere.transform.localScale = new Vector3(0.25f, 0.25f, 0.25f);
-				Destroy(sphere.GetComponent<SphereCollider>());
-
-				Renderer rend = sphere.GetComponent<Renderer>();
-				rend.material.shader = this.sphereShader;
-				rend.material.SetColor("_Color", new Color(0.973f, 0.475f, 0f));
-				rend.material.SetFloat("_Metallic", 0f);
-				rend.material.SetFloat("_Glossiness", 0f);
-
-				this.spheres.Add(sphere);
-			}
-		}
-
-		private void DisableCalibrationSpheres()
-		{
-			this.enableSpheresText.text = "Enable Spheres";
-
-			foreach(GameObject sphere in this.spheres)
-				Destroy(sphere);
-
-			this.spheres.Clear();
-		}
-
-		private void ShowSensitivity()
-		{
-			this.sensitivityLabelText.text = string.Format("{0}", this.sensitivity);
+				DisableCalibrationGuides();
 		}
 
 		public void PreviousAnchor()
@@ -321,6 +275,35 @@ namespace Htw.Cave.Menu
 				this.anchor = 0;
 
 			ShowAnchorImage();
+		}
+
+		private void EnableCalibrationGuides()
+		{
+			this.enableGuidesText.text = "Disable Visual Guide";
+			this.guides = MenuCalibrationHelper.CreateVisualGuide(this.emitters, this.visualGuidePrefab);
+		}
+
+		private void DisableCalibrationGuides()
+		{
+			this.enableGuidesText.text = "Enable Visual Guide";
+
+			if(this.guides == null)
+				return;
+
+			foreach(GameObject guide in this.guides)
+				Destroy(guide);
+
+			this.guides = null;
+		}
+
+		private void ShowDisplay()
+		{
+			this.displayLabelText.text = this.emitters[this.display].Configuration.DisplayName;
+		}
+
+		private void ShowSensitivity()
+		{
+			this.sensitivityLabelText.text = string.Format("{0}", this.sensitivity);
 		}
 
 		private void ShowAnchorImage()

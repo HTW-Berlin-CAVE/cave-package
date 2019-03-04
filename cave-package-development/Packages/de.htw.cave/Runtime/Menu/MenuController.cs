@@ -38,7 +38,7 @@ namespace Htw.Cave.Menu
 
 			if(this.leftJoycon != null)
 			{
-				if(this.leftJoycon.GetButton(JoyconLib.Joycon.Button.MINUS))
+				if(this.leftJoycon.GetButtonUp(JoyconLib.Joycon.Button.MINUS))
 					ToggleMenu();
 			}
 		}

@@ -50,7 +50,6 @@ namespace Htw.Cave.Projector
 			this.screenOverlay = base.GetComponent<ScreenOverlay>();
 			this.transformPlane = this.plane.TransformPlane(this.configuration.Width, this.configuration.Height);
 			this.equalization = Matrix4x4.identity;
-			this.invert = this.configuration.InvertStereo;
 			this.vr = this.vu = this.vn = Vector3.zero;
 			InitializeCamera();
 		}
@@ -127,6 +126,13 @@ namespace Htw.Cave.Projector
 
 			this.equalization = this.configuration.EqualizationMatrix;
 			ApplyMask();
+		}
+
+		public void SetStereoEffect(float convergence, float separation)
+		{
+			this.cam.stereoConvergence = convergence;
+			this.cam.stereoSeparation = separation;
+			this.invert = this.configuration.InvertStereo;
 		}
 
 		private void InitializeCamera()

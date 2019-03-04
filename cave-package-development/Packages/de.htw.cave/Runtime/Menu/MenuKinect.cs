@@ -28,6 +28,22 @@ namespace Htw.Cave.Menu
 		}
 
 		[SerializeField]
+		private Text enableMirrorText;
+		public Text EnableMirrorText
+		{
+			get { return this.enableMirrorText; }
+			set { this.enableMirrorText = value; }
+		}
+
+		[SerializeField]
+		private Text showAreaText;
+		public Text ShowAreaText
+		{
+			get { return this.showAreaText; }
+			set { this.showAreaText = value; }
+		}
+
+		[SerializeField]
 		private Shader sphereShader;
 		public Shader SphereShader
 		{
@@ -37,7 +53,8 @@ namespace Htw.Cave.Menu
 
 		private MenuManager manager;
 		private KinectActor actor;
-		private List<GameObject> spheres;
+		private List<GameObject> mirrorJoints;
+		private GameObject trackingArea;
 		private JointType[] types;
 		private Rect area;
 
@@ -45,7 +62,6 @@ namespace Htw.Cave.Menu
 		{
 			this.manager = base.GetComponentInParent<MenuManager>();
 			this.actor = this.manager.KinectBrain.GetComponentInChildren<KinectActor>();
-			this.spheres = new List<GameObject>();
 			this.types = new JointType[]{
 				JointType.Head,
 				JointType.HandLeft,
@@ -68,12 +84,12 @@ namespace Htw.Cave.Menu
 
 		public void OnEnable()
 		{
-			InstantiateJointSpheres();
 		}
 
 		public void OnDisable()
 		{
-			DestroyJointSpheres();
+			HideTrackingArea();
+			DestroyMirrorJoints();
 		}
 
 		public void Update()
@@ -95,8 +111,8 @@ namespace Htw.Cave.Menu
 				this.visibilityText.text = "Missing";
 			}
 
-
-			Mirror();
+			if(this.mirrorJoints != null)
+				Mirror();
 		}
 
 #if UNITY_EDITOR
@@ -106,31 +122,57 @@ namespace Htw.Cave.Menu
 		}
 #endif
 
-		private void InstantiateJointSpheres()
+		public void ToggleMirrorJoints()
 		{
-			for(int i = this.types.Length - 1; i >= 0; --i)
-			{
-				GameObject sphere = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-				sphere.name = "Kinect Joint " + this.types[i].ToString();
-				sphere.transform.localScale = new Vector3(0.15f, 0.15f, 0.15f);
-				Destroy(sphere.GetComponent<SphereCollider>());
-
-				Renderer rend = sphere.GetComponent<Renderer>();
-				rend.material.shader = this.sphereShader;
-				rend.material.SetColor("_Color", new Color(0.973f, 0.475f, 0f));
-				rend.material.SetFloat("_Metallic", 0f);
-				rend.material.SetFloat("_Glossiness", 0f);
-
-				this.spheres.Add(sphere);
-			}
+			if(this.mirrorJoints == null)
+				CreateMirrorJoints();
+			else
+				DestroyMirrorJoints();
 		}
 
-		private void DestroyJointSpheres()
+		public void ToggleTrackingArea()
 		{
-			foreach(GameObject sphere in this.spheres)
+			if(this.trackingArea == null)
+				ShowTrackingArea();
+			else
+				HideTrackingArea();
+		}
+
+		private void CreateMirrorJoints()
+		{
+			this.enableMirrorText.text = "Disable Mirror";
+
+			this.mirrorJoints = MenuKinectHelper.CreateMirrorJoints(this.types, this.sphereShader);
+		}
+
+		private void DestroyMirrorJoints()
+		{
+			this.enableMirrorText.text = "Enable Mirror";
+
+			if(this.mirrorJoints == null)
+				return;
+
+			foreach(GameObject sphere in this.mirrorJoints)
 				Destroy(sphere);
 
-			this.spheres.Clear();
+			this.mirrorJoints = null;
+		}
+
+		private void ShowTrackingArea()
+		{
+			this.showAreaText.text = "Hide Tracking Area";
+
+			this.trackingArea = MenuKinectHelper.CreateTrackingArea(this.manager.KinectBrain.transform, this.area, this.sphereShader);
+		}
+
+		private void HideTrackingArea()
+		{
+			this.showAreaText.text = "Show Tracking Area";
+
+			if(this.trackingArea == null)
+				return;
+
+			Destroy(this.trackingArea);
 		}
 
 		private void Mirror()
@@ -140,7 +182,7 @@ namespace Htw.Cave.Menu
 			Vector3 direction = this.manager.transform.position - this.actor.transform.position;
 			direction.y = 0f;
 
-			foreach(GameObject sphere in this.spheres)
+			foreach(GameObject sphere in this.mirrorJoints)
 			{
 				Vector3 worldPosition = this.manager.KinectBrain.transform.TransformPoint(this.actor.GetJointPosition(this.types[jointIndex++]));
 				sphere.transform.position = worldPosition + direction;

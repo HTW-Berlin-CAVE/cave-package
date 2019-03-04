@@ -9,7 +9,8 @@ namespace Htw.Cave.ImportExport
 	public enum ImportExportLogType
 	{
 		Import,
-		Export
+		Export,
+		ImportManually
 	}
 
     public struct ImportExportLog
@@ -23,6 +24,26 @@ namespace Htw.Cave.ImportExport
 			this.logType = logType;
 			this.dateTime = dateTime;
 			this.scriptableObject = scriptableObject;
+		}
+
+		public string ToLog()
+		{
+			string line = this.dateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
+
+			switch(this.logType)
+			{
+				case ImportExportLogType.Import:
+					line = line + " - Import";
+					break;
+				case ImportExportLogType.Export:
+					line = line + " - Export";
+					break;
+				case ImportExportLogType.ImportManually:
+					line = line + " - Import Manually";
+					break;
+			}
+
+			return line + " - " + this.scriptableObject.name;
 		}
     }
 }

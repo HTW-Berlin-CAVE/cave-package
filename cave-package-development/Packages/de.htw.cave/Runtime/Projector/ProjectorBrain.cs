@@ -47,8 +47,7 @@ namespace Htw.Cave.Projector
 
 			for(int i = this.emitters.Length - 1; i >= 0; --i)
 			{
-				this.emitters[i].Camera.stereoConvergence = this.settings.StereoConvergence;
-				this.emitters[i].Camera.stereoSeparation = this.settings.StereoSeparation;
+				this.emitters[i].SetStereoEffect(this.settings.StereoConvergence, this.settings.StereoSeparation);
 
 				if(this.settings.EqualizeImages)
 					this.emitters[i].Equalize(this.settings.ReloadEqualization);

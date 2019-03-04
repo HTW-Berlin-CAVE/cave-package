@@ -1,4 +1,4 @@
-# Algorithms used
+# Algorithms
 
 ## Holographic Projection
 > **Note**: This algorithm is based on the description provided
@@ -16,7 +16,6 @@ Which turns out just to be a normal homography it solves it problem of
 the depth buffer by approximation.
 
 ## Kalman Filter
-
 One of the famous filters for tracking data.
 Solves the problem of noise in continuous data collected from tracking devices.
 
@@ -26,6 +25,5 @@ Gery Casiez, Nicolas Roussel and Daniel Vogel which can be found
 [here](http://cristal.univ-lille.fr/~casiez/1euro/).
 
 Filters noise more precisely than a Kalman filter.
-You can compare both filter in
-[this](http://cristal.univ-lille.fr/~casiez/1euro/InteractiveDemo/) interactive
-demo.
+You can compare both in [this](http://cristal.univ-lille.fr/~casiez/1euro/InteractiveDemo/)
+interactive demo.

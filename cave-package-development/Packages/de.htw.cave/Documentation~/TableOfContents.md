@@ -1,12 +1,14 @@
 # HTW Berlin Cave Automatic Virtual Environment Documentation
 
 * **Introduction**
-	* [Package Overview](index.md)
-	* [Installation Guide](install.md)
+	* [Package Overview](General.md)
+	* [Installation Guide](Installation.md)
 * **Setup**
-	* [From Scratch](scratch.md)
-	* [Adjust Profiles](adjust.md)
+	* [From Scratch](FromScratch.md)
+	* [How do I's](HowDoI.md)
 * **Development**
-	* [Code Documentation](code.md)
-	* [Algorithm Documentation](algorithms.md)
-	* [Third Party](thirdparty.md)
+	* [Manuals](Manual/List.md)
+	* [Code Documentation](Code/Namespaces.md)
+	* [Algorithms](Algorithms.md)
+	* [Third Party](ThirdParty.md)
+	* [Future](Future.md)

@@ -20,7 +20,7 @@ namespace Htw.Cave.Kinect
 
 			Vector3 position = actor.GetJointPosition(jointType);
 
-			return area.Contains(position);
+			return area.Contains(new Vector2(position.x, position.z));
 		}
 
 		public static void FindShortest(this KinectActor actor, Body[] bodies)

@@ -137,11 +137,6 @@ namespace Htw.Cave.Math
 		    //    =     1 | -y   y      =     1 | H01 H11  0  H21
 		    // horizont 2 |  n   f   horizont 2 |  0   0   d   0
 		    //                                3 | H02 H12  0   1
-		    //
-		    // https://en.wikibooks.org/wiki/Cg_Programming/Unity/Projection_for_Virtual_Reality
-		    // https://en.wikibooks.org/wiki/Cg_Programming/Vertex_Transformations
-		    // https://csc.lsu.edu/~kooima/pdfs/gen-perspective.pdf
-		    // https://github.com/joshferns/KinectHolographic
 
 		    float left = nearPlane[0].x;
 		    float right = nearPlane[1].x;
@@ -175,7 +170,6 @@ namespace Htw.Cave.Math
 			//
 			// with H = homography vectors
 			// approximation of depth buffer with d = 1-|H20|-|H21|
-			// https://www.youtube.com/watch?v=fVJeJMWZcq8
 
 			Matrix4x4 mat = Matrix4x4.zero;
 
