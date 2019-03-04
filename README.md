@@ -8,7 +8,7 @@
 	* [How do I's](cave-package-development/Packages/de.htw.cave/Documentation~/HowDoI.md)
 * **Development**
 	* [Manuals](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/List.md)
-	* [Code Documentation](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/Namespaces.md)
-	* [Algorithms](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/Algorithms.md)
-	* [Third Party](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/ThirdParty.md)
-	* [Future](cave-package-development/Packages/de.htw.cave/Documentation~/Manual/Future.md)
+	* [Code Documentation](cave-package-development/Packages/de.htw.cave/Documentation~/Code/Namespaces.md)
+	* [Algorithms](cave-package-development/Packages/de.htw.cave/Documentation~/Algorithms.md)
+	* [Third Party](cave-package-development/Packages/de.htw.cave/Documentation~/ThirdParty.md)
+	* [Future](cave-package-development/Packages/de.htw.cave/Documentation~/Future.md)
