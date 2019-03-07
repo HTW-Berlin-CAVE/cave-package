@@ -12,6 +12,12 @@ to *Don't Sync*.
 Go to ```Edit -> Project Settings -> Player -> Resolution and Presentation``` and change the
 *Fullscreen* mode to *Exclusive Fullscreen*.
 
+## Start the Application in fullscreen if the Resolution and Presentation Setting is not working
+Open the registry editor (WIN+r and type: regedit.exe), search for the Key ````"HKEY_CURRENT_USER" -> "Software" -> [COMPANY_NAME] -> [PRODUCT_NAME]``` and delete all it's contents.
+
+[Reference](
+https://forum.unity.com/threads/playersettings-are-ignored-when-building-windowed-fullscreen.257700/)
+
 ## Look for Exceptions and Errors?
 Open up the file system and navigate to the persistent data path
 (for more information click [here](https://docs.unity3d.com/ScriptReference/Application-persistentDataPath.html)).
