@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e2a5ce27a0b5294d81bc0a006d23f8e, type: 3}
+  m_Name: Projector_Configuration_Right
+  m_EditorClassIdentifier: 
+  displayName: Right
+  order: 3
+  width: 3
+  height: 2.45
+  near: 0.1
+  far: 1000
+  fieldOfView: 90
+  invertStereo: 0
+  equalizationAnchors:
+  - {x: 0.3043489, y: 0.95957386}
+  - {x: 0.87112176, y: 0.9919166}
+  - {x: 0.9565912, y: 0.03358999}
+  - {x: 0.25533575, y: 0.10847199}
+  equalizationMatrix:
+  - {x: 0.61598974, y: -0.018328328, z: 0, w: -0.056803927}
+  - {x: 0.0058180927, y: 0.9065534, z: 0, w: 0.1044233}
+  - {x: 0, y: 0, z: 0.8387728, w: 0}
+  - {x: 0.15578085, y: 0.14245766, z: 0, w: 1}

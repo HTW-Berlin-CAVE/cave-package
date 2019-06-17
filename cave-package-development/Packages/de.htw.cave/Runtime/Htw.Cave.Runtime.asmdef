@@ -1,0 +1,18 @@
+{
+    "name": "Htw.Cave.Runtime",
+    "references": [
+        "Microsoft.Kinect.StandardAssets",
+        "JoyconLib",
+        "Unity.Legacy.ImageEffects",
+        "OneEuroFilterUnity",
+        "KalmanFilterSimple"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": []
+}
